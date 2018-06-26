@@ -1,0 +1,143 @@
+body {
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 10pt;
+  min-width: 300px;
+  padding: 8px 8px;
+}
+
+a {
+  margin-top: -1px;
+  color: black;
+  text-decoration: none;
+
+  &:hover {
+    @extend a;
+  }
+}
+
+.menuBox, .logo, .login, .article {
+  display: flex;
+}
+
+.container {
+  width: 85%;
+  padding: 0;
+  background: rgb(246, 246, 239);
+}
+
+// NAVIGATION CONTAINER
+.menuBox {
+  background: #ff6600;
+  padding: 2px;
+}
+
+  .logo {
+    margin: auto 0;
+  }
+
+  .icon {
+    border: 1px solid white;
+    margin-right: 5px;
+  }
+
+  .menu, .title, .links {
+    display: inline-block;
+  }
+
+  .title {
+    font-weight: bold;
+    margin-right: 5px;
+  }
+
+  .login {
+    flex-direction: column;
+    justify-content: center;
+    margin-left: auto;
+    padding-right: 3px;
+  }
+
+//NEWS CONTAINER
+.newsBox {
+  color: #828282;
+  padding: 10px 0;
+}
+
+  .article {
+    margin-top: 3px;
+  }
+
+    .bullet {
+      min-width: 42px;
+      text-align: right;
+    }
+
+      .upvote {
+        font-size: 9px;
+      }
+
+    .articleDetails {
+      padding-left: 3px;
+    }
+
+      .domain {
+        font-size: 8pt;
+        color: #828282;
+
+        &:hover {
+          text-decoration: underline;
+          color: inherit;
+        }
+      }
+
+      .articleSubtext {
+        font-size: 7pt;
+
+        a {
+          color: inherit;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+// FOOTER CONTAINER
+.footLinks {
+  margin-top: 10px;
+  color: #828282;
+  text-align: center;
+  font-size: 8pt;
+  padding: 15px 0;
+  border-top: 2px solid #ff6600;
+
+  a:visited {
+    color: #828282
+  }
+}
+
+// RESPONSIVENESS
+@media screen and (max-width: 750px) {
+  
+  body {
+    padding: 0;
+    font-size: 11pt;
+  }
+
+  .container {
+    min-width: 100%;
+  }
+
+  .domain {
+    font-size: 8pt;
+  }
+
+  .articleSubtext {
+    font-size: 9pt;
+  }
+
+  .links {
+    display: block;
+    font-size: 12px;
+  }
+
+}
