@@ -1,11 +1,11 @@
 window.onload = function () {
 
-  let numArticles = 30,
-    indexStart = 0,
-    newsBlk = '',
-    bullet = 0,
-    showNext30 = true;
+  let numArticles = 30, //number of articles to populate at a time
+    indexStart = 0, //starting index for each new block of articles
+    bullet = 1, //article numbering
+    showNext30 = true; //show next 30 articles (happens once, will become false thereafter)
 
+  //query IDs of top stories from Hacker News
   getData('topstories.json')
     .then((result) => {
       let storyId = JSON.parse(result.response);
@@ -13,6 +13,9 @@ window.onload = function () {
       return storyId;
     })
     .then((storyId) => {
+
+      //function to capture scroll event and trigger loading of the next
+      //30 articles upon scrolling to bottom of page
       window.onscroll = function () {
         let body = document.getElementsByClassName("container")[0],
           bodyHeight = body.offsetHeight,
@@ -26,7 +29,11 @@ window.onload = function () {
         }
       }
     })
+    .catch((error) => {
+      console.log(error)
+    })
 
+  //GET query for IDs of top stories and articles
   function getData(path) {
     return new Promise(function (resolve, reject) {
       let http = new XMLHttpRequest();
@@ -44,25 +51,40 @@ window.onload = function () {
     })
   }
 
+  //function to generate dynamic data from GET query
   function addArticles(storyId, index) {
-    let re = /:\/\/(.[^/]+)/;
-
+    let re = /:\/\/(.[^/]+)/, //regex to isolate domain of article URL
+      arr = [], //array to store query path for GET query
+      url = '',
+      domain = '';
     if (showNext30 === true) {
+
+      //generate array of GET query paths
       for (let i = index; i < index + numArticles; i++) {
+        arr.push("item/" + storyId[i] + ".json");
+      }
 
-        let promise1 = new Promise(function (resolve, reject) {
-          resolve(getData("item/" + storyId[i] + ".json"))
-        })
-        
-        promise1.then((result) => {
-          console.log(result)
-          if (result) {
-
-            bullet++
-            let story = JSON.parse(result.response),
+      //generate articles to populate front page
+      Promise.all(arr.map((item, index) => {
+        return getData(item)
+      }))
+        .then((result) => {
+          result.map((item, index) => {
+            let story = JSON.parse(item.response),
               newsBox = document.getElementsByClassName("newsBox")[0];
 
-            newsBlk +=
+            //conditions dealing with undefined URLs
+            if (story.url !== undefined) {
+              url = story.url.match(re)[1];
+              domain = "(" + url + ")"
+            }
+            else {
+              url = "https://news.ycombinator.com/from?site=" + story.id;
+              domain = ''
+            }
+
+            //add new articles to page
+            newsBox.innerHTML +=
               `
             <div class="article">
               <div class="bullet">
@@ -71,8 +93,8 @@ window.onload = function () {
               </div>
               <div class="articleDetails">
                 <div class="articleTitle">
-                <a href="${story.url}">${story.title} </a>
-                <a class="domain" href="https://news.ycombinator.com/from?site=${story.url}">(${story.url})</span>
+                <a href="${url}">${story.title} </a>
+                <a class="domain" href="https://news.ycombinator.com/from?site=${url}">${domain}</span>
               </div>
               <div class="articleSubtext">
                 ${story.score} points by 
@@ -85,14 +107,12 @@ window.onload = function () {
               </div>
             </div>
             `
-
-            if (i === index + numArticles - 1) {
-              newsBox.innerHTML += newsBlk;
-              newsBlk = '';
-            }
-          }
+            bullet++
+          })
         })
-      }
+        .catch((error) => {
+          console.log(error)
+        })
     }
   }
 }
