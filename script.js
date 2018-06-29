@@ -1,6 +1,6 @@
 window.onload = function () {
 
-  let numArticles = 30, //number of articles to populate at a time
+  var numArticles = 30, //number of articles to populate at a time
     indexStart = 0, //starting index for each new block of articles
     bullet = 1, //article numbering
     showNext30 = true; //show next 30 articles (happens once, will become false thereafter)
@@ -8,7 +8,7 @@ window.onload = function () {
   //query IDs of top stories from Hacker News
   getData('topstories.json')
     .then((result) => {
-      let storyId = JSON.parse(result.response);
+      var storyId = JSON.parse(result.response);
       addArticles(storyId, indexStart);
       return storyId;
     })
@@ -17,7 +17,7 @@ window.onload = function () {
       //function to capture scroll event and trigger loading of the next
       //30 articles upon scrolling to bottom of page
       window.onscroll = function () {
-        let body = document.getElementsByClassName("container")[0],
+        var body = document.getElementsByClassName("container")[0],
           bodyHeight = body.offsetHeight,
           pageYOffset = window.pageYOffset,
           scrollPos = pageYOffset + window.innerHeight;
@@ -36,7 +36,7 @@ window.onload = function () {
   //GET query for IDs of top stories and articles
   function getData(path) {
     return new Promise(function (resolve, reject) {
-      let http = new XMLHttpRequest();
+      var http = new XMLHttpRequest();
       http.onload = function () {
         if (http.readyState === 4 && http.status === 200) {
           resolve(http);
@@ -53,14 +53,14 @@ window.onload = function () {
 
   //function to generate dynamic data from GET query
   function addArticles(storyId, index) {
-    let re = /:\/\/(.[^/]+)/, //regex to isolate domain of article URL
+    var re = /:\/\/(.[^/]+)/, //regex to isolate domain of article URL
       arr = [], //array to store query path for GET query
       url = '',
       domain = '';
     if (showNext30 === true) {
 
       //generate array of GET query paths
-      for (let i = index; i < index + numArticles; i++) {
+      for (var i = index; i < index + numArticles; i++) {
         arr.push("item/" + storyId[i] + ".json");
       }
 
@@ -70,7 +70,7 @@ window.onload = function () {
       }))
         .then((result) => {
           result.map((item, index) => {
-            let story = JSON.parse(item.response),
+            var story = JSON.parse(item.response),
               newsBox = document.getElementsByClassName("newsBox")[0];
 
             //conditions dealing with undefined URLs
